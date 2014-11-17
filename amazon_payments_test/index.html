@@ -26,7 +26,7 @@
   <div id="amazon-pay-button">
     
   </div>
-  <p><a>Fake Amazon Button - Click me</a></p>
+  <p><a id="fake-button">Fake Amazon Button - Click me</a></p>
   <p>
     <div id="wallet">
       
@@ -35,5 +35,10 @@
       
     </div>
   </p>
+  <script type="text/javascript" charset="utf-8">
+  $('#fake-button').click(function () {
+    $('amazon-pay-button').trigger('click');
+  })
+  </script>
 </body>
 </html>
