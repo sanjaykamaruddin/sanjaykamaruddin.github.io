@@ -14,7 +14,7 @@
             <p class="mb-0">I like turtles.</p>
             <footer class="blockquote-footer"><cite title="Source Title">Mike Bracco</cite></footer>
           </blockquote>
-          <ul class="nav nav-pills" id="media-filter">
+          <ul class="nav nav-pills" id="media-filter" style="display:none">
             <li class="nav-item">
               <a class="nav-link active" href="#" data-component="filter" data-toggle="all">All</a>
             </li>
@@ -75,6 +75,7 @@
             if (entryCount <= 0) {
               $('#accordion').empty();
               displayEntries();
+              $('#media-filter').show();
             }
           }
         });
