@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta charset="utf-8">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <title>Oreo Stats</title>
@@ -52,12 +53,14 @@
               leader        = rankedEntries[0],
               jeff          = _.find(rankedEntries, function(entry) { return entry.wyng_id === 112233443 });
 
+          /*
           $('#vote-difference-container').
             find('#vote-difference').text(leader.voteCount - jeff.voteCount).
             end().
             find('#jeff-handle').text((jeff.profile.name || jeff.profile.username)).
             end().
           show();
+          */
           rankedEntries.forEach(function(entry) {
             var contentHtml = null;
             var mediaType = (entry.media && entry.media.mediatype) || "unknown";
