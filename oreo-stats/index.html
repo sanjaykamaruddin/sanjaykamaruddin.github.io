@@ -74,7 +74,7 @@
               default:
                 contentHtml = mediaType;
             }
-            var entryHtml = '<div class="card" data-media-type="' + mediaType + '"><div class="card-header"><h5 class="mb-0"><a data-toggle="collapse" data-parent="#accordion" href="#entry' + entry.wyng_id + '"> ' + (entry.profile.name || entry.profile.username) + ' (' + entry.voteCount + ')</a></h5></div><div id="entry' + entry.wyng_id + '" class="collapse"><div class="card-block">' + contentHtml + '<p><a href="http://oreogames2017.com/' + entry.wyng_id + '" target="_blank">http://oreogames2017.com/' + entry.wyng_id + '</a></p></div></div></div>';
+            var entryHtml = '<div class="card" data-media-type="' + mediaType + '"><div class="card-header"><h5 class="mb-0"><a data-toggle="collapse" data-parent="#accordion" href="#entry' + entry.wyng_id + '"> ' + (entry.profile.name || entry.profile.username) + ' (' + entry.voteCount + ' votes)</a></h5></div><div id="entry' + entry.wyng_id + '" class="collapse"><div class="card-block">' + contentHtml + '<p><a href="http://oreogames2017.com/' + entry.wyng_id + '" target="_blank">http://oreogames2017.com/' + entry.wyng_id + '</a></p></div></div></div>';
             $(entryHtml).appendTo("#accordion");
           })
         }
