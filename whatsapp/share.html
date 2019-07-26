@@ -7,6 +7,20 @@
   crossorigin="anonymous"></script>
 </head>
 <body>
+ 
+ <p>
+  <a href="whatsapp://send?text=urlencodedtext">Mobile No dialog</a>
+  <br />
+  whatsapp://send?text=urlencodedtext
+ </p>
+  
+  <p>
+  <a id="loo">Mobile</a>
+  <br />
+  whatsapp://send?text=urlencodedtext
+ </p>
+  
+  
 <p>
   <a id="boo">Mobile</a>
   <br />
@@ -38,6 +52,11 @@ https://wa.me/2134000877?text=mooo
   "https://web.whatsApp.com/send?text=mooo
  </p>
 <script>
+  
+    $('#loo').click((e) => {
+  window.open("whatsapp://send?text=urlencodedtext");
+});
+  
   $('#goo').click((e) => {
   window.open("https://wa.me?text=mooo");
 });
