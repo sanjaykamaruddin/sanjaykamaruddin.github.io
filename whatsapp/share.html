@@ -13,11 +13,19 @@
   https://wa.me/?text=mooo
  </p>
 <p>
+<a id="goo">Mobile Test1</a>
+<br />
+https://wa.me?text=mooo
+</p>
+<p>
   <a id="hoo">Desktop</a>
   <br />
   "https://web.whatsApp.com/send?text=mooo
  </p>
 <script>
+  $('#goo').click((e) => {
+  window.open("https://wa.me?text=mooo");
+});
 $('#boo').click((e) => {
   window.open("https://wa.me/?text=mooo");
 });
