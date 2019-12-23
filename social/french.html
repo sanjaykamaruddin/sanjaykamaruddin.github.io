@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <title>Automation | Social Shares</title>
+  </head>
+  <body>
+    <script>
+    /*
+     * Important: Change fbAppId when moving page to a new domain
+     */
+    const fbAppId           = '485282455600140';
+    window.fbAsyncInit = function() {
+        FB.init({
+        appId            : fbAppId,
+        autoLogAppEvents : true,
+        xfbml            : true,
+        version          : 'v4.0'
+        });
+    };
+    </script>
+    <script async defer src="https://connect.facebook.net/fr_FR/sdk.js"></script>
+
+
+      <div class="container mt-5">
+          <div class="row">
+              <div class="col">
+                  
+                <h2>Facebook Shares</h2>
+                  <table class="table" id="facebook-share-table">
+                      <thead class="thead-dark">
+                          <tr>
+                              <th>Link</th>
+                              <th>Description</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr>
+                              <td><a href="javascript:void(0)" class="btn btn-outline-primary" id="redirect-no-utm">Redirect - No UTM</a></td>
+                              <td>
+                                  <a href="https://developers.facebook.com/docs/sharing/reference/share-dialog#redirect" target="_blank">Documentation</a>
+                                  <p>Link ID: <code>redirect-no-utm</code></p>
+                              </td>
+                          </tr>
+                          <tr>
+                              <td><a href="javascript:void(0)" class="btn btn-outline-primary" id="redirect-with-utm">Redirect - With UTM</a></td>
+                              <td>
+                                <a href="https://developers.facebook.com/docs/sharing/reference/share-dialog#redirect" target="_blank">Documentation</a>
+                                <p>Link ID: <code>redirect-with-utm</code></p>
+                              </td>
+                          </tr>
+
+                            <tr>
+                              <td><a href="javascript:void(0)" class="btn btn-outline-primary" id="sharer-no-utm">Sharer.php - No UTM</a></td>
+                              <td>
+                                  <a href="https://developers.facebook.com/docs/plugins/share-button" target="_blank">Documentation</a>
+                                  <p>Link ID: <code>sharer-no-utm</code></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><a href="javascript:void(0)" class="btn btn-outline-primary" id="sharer-with-utm">Sharer.php - With UTM</a></td>
+                                <td>
+                                    <a href="https://developers.facebook.com/docs/plugins/share-button" target="_blank">Documentation</a>
+                                    <p>Link ID: <code>sharer-with-utm</code></p>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td><a href="javascript:void(0)" class="btn btn-outline-primary" id="sdk-no-utm">SDK - No UTM</a></td>
+                                <td>
+                                    <a href="https://developers.facebook.com/docs/sharing/reference/share-dialog#jssdk" target="_blank">Documentation</a>
+                                    <p>Link ID: <code>sdk-no-utm</code></p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><a href="javascript:void(0)" class="btn btn-outline-primary" id="sdk-with-utm">SDK - With UTM</a></td>
+                                <td>
+                                    <a href="https://developers.facebook.com/docs/sharing/reference/share-dialog#jssdk" target="_blank">Documentation</a>
+                                    <p>Link ID: <code>sdk-with-utm</code></p>
+                                </td>
+                            </tr>
+                      </tbody>
+                  </table>
+
+              </div>
+          </div>
+      </div>
+      <script type="text/javascript">
+        const myLocation        = window.location.href;
+        const linkWithUtm       = 'https://www.gofundme.com/f/1q82ecyxdc?utm_source=facebook&utm_medium=social&utm_campaign=p_cp+share-sheet';
+        const linkWithoutUtm    = 'https://www.gofundme.com/f/1q82ecyxdc';
+
+        $('#facebook-share-table').delegate('a', 'click', function (e) {
+            e.stopPropagation();
+            const linkId = $(e.target).attr('id');
+            switch (linkId) {
+                case 'redirect-no-utm':
+                    var redirectLink = `https://www.facebook.com/dialog/share?app_id=${fbAppId}&display=popup&href=${encodeURIComponent(linkWithoutUtm)}&redirect_uri=${encodeURIComponent(myLocation)}`;
+                    window.open(redirectLink, 'share_popup', 'height=500,width=650');
+                break;
+                case 'redirect-with-utm':
+                    var redirectLink = `https://www.facebook.com/dialog/share?app_id=${fbAppId}&display=popup&href=${encodeURIComponent(linkWithUtm)}&redirect_uri=${encodeURIComponent(myLocation)}`;
+                    window.open(redirectLink, 'share_popup', 'height=500,width=650');
+                break;
+                case 'sharer-no-utm':
+                    var sharerLink = "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.gofundme.com%2Ff%2F1q82ecyxdc&amp;src=sdkpreparse";
+                    window.open(sharerLink, 'share_popup', 'height=500,width=650');
+                break;
+                case 'sharer-with-utm':
+                    var sharerLink = "https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fwww.gofundme.com%2Ff%2F1q82ecyxdc%3Futm_source%3Dfacebook%26utm_medium%3Dsocial%26utm_campaign%3Dp_cp%2Bshare-sheet&amp;src=sdkpreparse";
+                    window.open(sharerLink, 'share_popup', 'height=500,width=650');
+                break;
+                case 'sdk-no-utm':
+                    FB.ui({
+                        method: 'share',
+                        href: linkWithoutUtm,
+                        redirect_uri: myLocation,
+                        app_id: fbAppId
+                    });
+                break;
+                case 'sdk-with-utm':
+                FB.ui({
+                    method: 'share',
+                    href: linkWithUtm,
+                    redirect_uri: myLocation,
+                    app_id: fbAppId
+                });
+                break;
+                default:
+                    console.log('yeah');
+            }
+        });
+
+
+      </script>
+  </body>
+</html>
