@@ -61,7 +61,7 @@
 
         document.getElementById("native-share").addEventListener('change', () => {
             const files = this.files;
-            if (navigator.canShare && navigator.canShare({ files: files })) {
+            if (navigator.canShare) {
                 const shareData = {
                     files: files,
                     title: 'This is a custom title',
