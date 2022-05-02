@@ -61,7 +61,7 @@
         });
 
         document.getElementById("native-share-all").addEventListener('click', async () => {
-            const nachoResponse = await fetch('https://d2g8igdw686xgo.cloudfront.net/64624579_1650960589385811_r.jpeg');
+            const nachoResponse = await fetch('https://benkaiser.github.io/web-share-images/nacho.jpg');
             const nachoBlob = await nachoResponse.blob();
 
 
@@ -82,7 +82,7 @@
         });
 
         document.getElementById("native-share-image").addEventListener('click', async () => {
-            const nachoResponse = await fetch('https://d2g8igdw686xgo.cloudfront.net/64624579_1650960589385811_r.jpeg');
+            const nachoResponse = await fetch('https://benkaiser.github.io/web-share-images/nacho.jpg');
             const nachoBlob = await nachoResponse.blob();
 
 
@@ -90,7 +90,7 @@
                 new File([nachoBlob], 'meme.jpg', { type: "image/jpeg", lastModified: new Date().getTime() })
             ];
             const shareData = {
-                files: files,
+                files: files
             };
             try {
                 await navigator.share(shareData);
