@@ -32,6 +32,13 @@
                 <a href="https://cards-dev.twitter.com/validator">Twitter Card Validator</a>
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <h1 id="native">Native Share</h1>
+                <input type="file" name="native-share" id="native-share" multiple> <br />
+                <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share#browser_compatibility">Browser Compatibility</a>
+            </div>
+        </div>
     </div>
     <script>
         window.fbAsyncInit = function() {
@@ -50,7 +57,22 @@
                 hashtag: "#gofundme",
                 quote: "This is a custom quote",
             }, function(response){});
-        })
+        });
+
+        document.getElementById("native-share").addEventListener('change', () => {
+            const files = this.files;
+            if (navigator.canShare && navigator.canShare({ files: files })) {
+                const shareData = {
+                    files: files,
+                    title: 'This is a custom title',
+                    text: 'This is a custom description',
+                    url: 'https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez'
+                };
+                navigator.share(shareData);
+            } else {
+                alert("Browser doesn't support native sharing")
+            }
+        });
       </script>
       <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
   </body>
