@@ -60,17 +60,19 @@
         });
 
         document.getElementById("native-share").addEventListener('change', () => {
-            const files = this.files;
-            if (navigator.canShare) {
-                const shareData = {
-                    files: files,
-                    title: 'This is a custom title',
-                    text: 'This is a custom description',
-                    url: 'https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez'
-                };
+            const files = document.getElementById("native-share").files;
+            const shareData = {
+                files: files,
+                title: 'This is a custom title',
+                text: 'This is a custom description',
+                url: 'https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez'
+            };
+            
+            if (navigator.canShare(shareData)) {
                 navigator.share(shareData);
             } else {
-                alert("Browser doesn't support native sharing")
+                alert("Browser doesn't support native sharing");
+                navigator.share(shareData);
             }
         });
       </script>
