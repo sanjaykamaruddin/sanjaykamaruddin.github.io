@@ -15,6 +15,7 @@
         <div class="row">
             <div class="col">
                 <h1 id="facebook">Facebook</h1>
+                <a href="#" id="facebook-share">Share it</a>
             </div>
         </div>
         <div class="row">
@@ -32,6 +33,15 @@
             version          : 'v13.0'
           });
         };
+
+        document.getElementById("facebook-share").addEventListener('click', () => {
+            FB.ui({
+                method: 'share',
+                href: 'https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez',
+                hashtag: "#gofundme",
+                quote: "This is a custom quote",
+            }, function(response){});
+        })
       </script>
       <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
   </body>
