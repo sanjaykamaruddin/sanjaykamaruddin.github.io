@@ -15,15 +15,15 @@
         <div class="row">
             <div class="col">
                 <h1 id="facebook">Facebook</h1>
-                <a href="#" id="facebook-share">Share it</a>
+                <a href="#" id="facebook-share">Share it</a> <br >
                 <a href="https://developers.facebook.com/tools/debug/">Sharing debugger</a>
             </div>
         </div>
         <div class="row">
             <div class="col">
                 <h1 id="whatsapp">WhatsApp</h1>
-                <a href="https://api.whatsapp.com/send?text=https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez You can format your *text* using _markdown_">Share via Whatsapp</a>
-                <a href="https://faq.whatsapp.com/general/chats/how-to-format-your-messages/">Format messages with a subset of markdown</a>
+                <a href="https://api.whatsapp.com/send?text=https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez You can format your *text* using _markdown_">Share via Whatsapp</a> <br>
+                <a href="https://faq.whatsapp.com/general/chats/how-to-format-your-messages/">Format messages with a subset of markdown</a> <br>
             </div>
         </div>
         <div class="row">
@@ -59,7 +59,7 @@
             }, function(response){});
         });
 
-        document.getElementById("native-share").addEventListener('change', () => {
+        document.getElementById("native-share").addEventListener('change', async () => {
             const files = document.getElementById("native-share").files;
             const shareData = {
                 files: files,
@@ -67,12 +67,10 @@
                 text: 'This is a custom description',
                 url: 'https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez'
             };
-            
-            if (navigator.canShare(shareData)) {
-                navigator.share(shareData);
-            } else {
-                alert("Browser doesn't support native sharing");
-                navigator.share(shareData);
+            try {
+                await navigator.share(shareData);
+            } catch (e) {
+                alert(e);
             }
         });
       </script>
