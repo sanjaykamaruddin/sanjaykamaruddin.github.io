@@ -35,9 +35,15 @@
         <div class="row">
             <div class="col">
                 <h1 id="native">Native Share</h1>
-                <a href="#" id="native-share-all">Native Sharing - Link/Image/Title</a><br />
-                <a href="#" id="native-share-image">Native Sharing - Image Only</a><br />
+                <a href="#" id="native-share-all" data-element="native-sharing">Native Sharing - Link/Image/Title/Description</a><br />
+                <a href="#" id="native-share-image" data-element="native-sharing">Native Sharing - Image Only</a><br />
+                <a href="#" id="native-share-itd" data-element="native-sharing">Native Sharing - Image/Title/Description</a><br />
                 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share#browser_compatibility">Browser Compatibility</a>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <small>1.2</small>
             </div>
         </div>
     </div>
@@ -60,46 +66,43 @@
             }, function(response){});
         });
 
-        document.getElementById("native-share-all").addEventListener('click', async () => {
-            const nachoResponse = await fetch('https://benkaiser.github.io/web-share-images/nacho.jpg');
-            const nachoBlob = await nachoResponse.blob();
+        document.querySelectorAll('[data-element="native-sharing"]').forEach(shareVariant => {
+            shareVariant.addEventListener('click', async (e) => {
+                const nachoResponse = await fetch('https://benkaiser.github.io/web-share-images/nacho.jpg');
+                const nachoBlob = await nachoResponse.blob();
 
-
-            const files = [
-                new File([nachoBlob], 'meme.jpg', { type: "image/jpeg", lastModified: new Date().getTime() })
-            ];
-            const shareData = {
-                files: files,
-                title: 'This is a custom title',
-                text: 'This is a custom description',
-                url: 'https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez'
-            };
-            try {
-                await navigator.share(shareData);
-            } catch (e) {
-                alert(e);
-            }
-        });
-
-        document.getElementById("native-share-image").addEventListener('click', async () => {
-            const nachoResponse = await fetch('https://benkaiser.github.io/web-share-images/nacho.jpg');
-            const nachoBlob = await nachoResponse.blob();
-
-
-            const files = [
-                new File([nachoBlob], 'meme.jpg', { type: "image/jpeg", lastModified: new Date().getTime() })
-            ];
-            const shareData = {
-                files: files
-            };
-            try {
-                await navigator.share(shareData);
-            } catch (e) {
-                alert(e);
-            }
+                const variant = e.target.id;
+                const files = [
+                    new File([nachoBlob], 'meme.jpg', { type: "image/jpeg", lastModified: new Date().getTime() })
+                ];
+                let shareData =  null;
+                if(variant === 'native-share-all') {
+                    shareData = {
+                        files: files,
+                        title: 'This is a custom title',
+                        text: 'This is a custom description',
+                        url: 'https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez'
+                    };
+                } else if (variant === "native-share-image") {
+                    shareData = {
+                        files: files,
+                    };
+                } else {
+                    shareData = {
+                        files: files,
+                        title: 'This is a custom title',
+                        text: 'This is a custom description',
+                    };
+                }
+                
+                try {
+                    await navigator.share(shareData);
+                } catch (e) {
+                    alert(e);
+                }
+            });
         });
       </script>
       <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
-      <small>1.1</small>
   </body>
 </html>
