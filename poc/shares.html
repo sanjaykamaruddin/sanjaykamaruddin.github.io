@@ -39,11 +39,15 @@
                 <a href="#" id="native-share-image" data-element="native-sharing">Native Sharing - Image Only</a><br />
                 <a href="#" id="native-share-itd" data-element="native-sharing">Native Sharing - Image/Title/Description</a><br />
                 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Navigator/share#browser_compatibility">Browser Compatibility</a>
+
+                <h2>Aspect Ratios</h2>
+                <a href="#" id="native-share-image-916">9x16</a><br />
+                <a href="#" id="native-share-image-45">4x5</a><br />
             </div>
         </div>
         <div class="row">
             <div class="col">
-                <small>1.2</small>
+                <small>v1.3</small>
             </div>
         </div>
     </div>
@@ -101,6 +105,41 @@
                     alert(e);
                 }
             });
+        });
+
+        document.getElementById('native-share-image-916').addEventListener('click', async (e) => {
+            const nachoResponse = await fetch('https://sanjaykamaruddin.github.io/poc/9_16.jpeg');
+            const nachoBlob = await nachoResponse.blob();
+
+            const files = [
+                new File([nachoBlob], 'meme.jpg', { type: "image/jpeg", lastModified: new Date().getTime() })
+            ];
+            const shareData = {
+                files: files,
+            };
+            
+            try {
+                await navigator.share(shareData);
+            } catch (e) {
+                alert(e);
+            }
+        });
+        document.getElementById('native-share-image-45').addEventListener('click', async (e) => {
+            const nachoResponse = await fetch('https://sanjaykamaruddin.github.io/poc/4_5.jpeg');
+            const nachoBlob = await nachoResponse.blob();
+
+            const files = [
+                new File([nachoBlob], 'meme.jpg', { type: "image/jpeg", lastModified: new Date().getTime() })
+            ];
+            const shareData = {
+                files: files,
+            };
+            
+            try {
+                await navigator.share(shareData);
+            } catch (e) {
+                alert(e);
+            }
         });
       </script>
       <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
