@@ -47,7 +47,14 @@
         </div>
         <div class="row">
             <div class="col">
-                <small>v1.3</small>
+                <h1 id="native">CORS Test</h1>
+                <a href="#" id="cors-success-link">With Access-Control-Allow-Origin Headers</a> <code>https://d11xith5yi0knr.cloudfront.net/cors-success/9_16.jpeg</code><br />
+                <a href="#" id="cors-fail-link">Without Access-Control-Allow-Origin Headers</a> <code>https://d11xith5yi0knr.cloudfront.net/cors-fail/9_16.jpeg</code><br />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <small>v1.4</small>
             </div>
         </div>
     </div>
@@ -140,6 +147,24 @@
             } catch (e) {
                 alert(e);
             }
+        });
+        document.getElementById('cors-success-link').addEventListener('click', async (event) => {
+            try {
+                const successResponse = await fetch('https://d11xith5yi0knr.cloudfront.net/cors-success/9_16.jpeg');
+                alert("success");
+            } catch(e) {
+                alert(e.message);
+            }
+            
+        });
+        document.getElementById('cors-fail-link').addEventListener('click', async (event) => {
+            try {
+                const errorResponse = await fetch('https://d11xith5yi0knr.cloudfront.net/cors-fail/9_16.jpeg');
+                alert("success");
+            } catch (e) {
+                alert(e.message);
+            }
+            
         });
       </script>
       <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
