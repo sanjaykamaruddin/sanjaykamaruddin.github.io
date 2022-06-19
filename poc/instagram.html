@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Shares</title>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <ol>
+                  <li>Download Instagram on an <em>iPhone</em></li>
+                  <li>Click <a href="#" id="native-share-image-916">this link</a></li>
+                  <li>Share to instagram Stories</li>
+                  <li>Add a link sticker</li>
+              </ol>
+            </div>
+        </div>
+    </div>
+    <script>
+
+
+
+        document.getElementById('native-share-image-916').addEventListener('click', async (e) => {
+            const nachoResponse = await fetch('https://sanjaykamaruddin.github.io/poc/9_16.jpeg');
+            const nachoBlob = await nachoResponse.blob();
+
+            const files = [
+                new File([nachoBlob], 'meme.jpg', { type: "image/jpeg", lastModified: new Date().getTime() })
+            ];
+            const shareData = {
+                files: files,
+            };
+            
+            try {
+                await navigator.share(shareData);
+            } catch (e) {
+                alert(e);
+            }
+        });
+      </script>
+      <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+  </body>
+</html>
