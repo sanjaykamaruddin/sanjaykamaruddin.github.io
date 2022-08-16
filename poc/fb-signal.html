@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Shares</title>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h1 id="facebook">Facebook</h1>
+                <a href="#" id="facebook-share">Share it</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        window.fbAsyncInit = function() {
+          FB.init({
+            appId            : '911371022888442',
+            autoLogAppEvents : true,
+            xfbml            : true,
+            version          : 'v13.0'
+          });
+        };
+
+        document.getElementById("facebook-share").addEventListener('click', () => {
+            FB.ui({
+                method: 'share',
+                href: 'https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez',
+                hashtag: "#gofundme",
+                quote: "This is a custom quote",
+            }, function(response){
+              debugger;
+            });
+        });
+
+      </script>
+      <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+  </body>
+</html>
