@@ -36,7 +36,11 @@
                 hashtag: "#gofundme",
                 quote: "This is a custom quote",
             }, function(response){
-              debugger;
+              if (response) {
+                alert("share successful")
+              } else. {
+                alert("share aborted")
+              }
             });
         });
 
