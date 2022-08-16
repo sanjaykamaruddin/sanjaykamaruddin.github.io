@@ -31,10 +31,8 @@
 
         document.getElementById("facebook-share").addEventListener('click', () => {
             FB.ui({
-                method: 'share',
-                href: 'https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez',
-                hashtag: "#gofundme",
-                quote: "This is a custom quote",
+                method: 'feed',
+                link: 'https://www.gofundme.com/f/in-loving-memory-of-nathaniel-nate-hernandez'
             }, function(response){
               if (response) {
                 alert("share successful")
