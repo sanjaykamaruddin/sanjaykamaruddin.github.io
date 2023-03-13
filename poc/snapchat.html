@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Snapchat sharing POC</title>
+    <script>
+      // Load the SDK asynchronously
+      (function (d, s, id) {
+        var js,
+          sjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s);
+        js.id = id;
+        js.src = "https://sdk.snapkit.com/js/v1/create.js";
+        sjs.parentNode.insertBefore(js, sjs);
+      })(document, "script", "snapkit-creative-kit-sdk");
+    </script>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row mt-5">
+            <div class="col">
+                <h1>napchat sharing POC</h1>
+                <hr>
+                <div
+                     class="snapchat-creative-kit-share"
+                     data-share-url="https://www.gofundme.com/f/in-loving-memory-of-qiana-houston"
+                     ></div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col">
+                <h2>Screenshots</h2>
+                <hr>
+                <div class="text-center">
+                    <img src="nextdoor-share-dialog.png" class="rounded img-thumbnail">
+                    <p>Share dialog</p>
+                </div>
+                <div class="text-center">
+                    <img src="nextdoor-newsfeed.png" class="rounded img-thumbnail">
+                    <p>News Feed</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  </body>
+</html>
