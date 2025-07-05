@@ -1,0 +1,137 @@
+<!-- 1 . Load Algolia clients & Autocomplete-JS -->
+<link  rel="stylesheet"
+       href="https://cdn.jsdelivr.net/npm/@algolia/autocomplete-theme-classic" />
+
+<script src="https://cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@algolia/autocomplete-js"></script>
+
+<!-- 2 . Search box mount-point -->
+<div id="autocomplete"></div>
+
+<script>
+  // ---- 3 . Bootstrap search client ----------------------------------------
+  const searchClient = algoliasearch(
+    'E7PHE9BB38',                     // Application ID
+    '113bf60bccbbcc611baacee9a82a1cf9'// Search-only API key
+  );
+
+  // ---- 4 . Instantiate Autocomplete (federated) ---------------------------
+  const { autocomplete, getAlgoliaResults } = window['@algolia/autocomplete-js'];
+
+  autocomplete({
+    container: '#autocomplete',
+    placeholder: 'Search GoFundMe…',
+    openOnFocus: false,                // optional: open on click-focus
+    detachedMediaQuery: '',           // keep it inline on desktop & mobile
+    getSources({ query }) {
+      // --- Source #1: P2P Fundraisers -------------------------------------
+      const fundraisers = {
+        sourceId: 'fundraisers',
+        // Use the fund-raiser URL slug when user hits <Enter>
+        getItemUrl({ item }) { return `https://www.gofundme.com/f/${item.url}`},
+        getItems() {
+          return getAlgoliaResults({
+            searchClient,
+            queries: [{
+              indexName: 'prod_funds_feed_replica_1',
+              query,
+              params: { hitsPerPage: 3 }
+            }]
+          });
+        },
+        templates: {
+          header({item, html}) { return html`<span class="aa-SourceHeaderTitle">Fundraisers</span>`; },
+          footer({ state, html }) {
+            const query = state.query;
+
+            // You can return any HTML here
+            return html`
+              <div class="aa-panelFooter">
+                <a  class="aa-SourceFooterSeeAll" href="https://www.gofundme.com/s?q=${encodeURIComponent(query)}">
+                  See all funraiser results for "<strong>${query}</strong>"
+                </a>
+              </div>
+            `;
+          },
+          item({ item, components, html }) {
+            return html`<a href="https://www.gofundme.com/f/${item.url}" className="aa-ItemLink">
+              <div class="hit">
+                <img src="${item.thumb_img_url}"
+                     class="hit-thumb" width="40" height="22" loading="lazy" />
+                <div class="hit-body">
+                  <div class="hit-title">
+                    ${components.Highlight({ hit: item, attribute: 'fundname' })}
+                  </div>
+                  <div class="hit-meta">
+                    by ${item.username} • $${item.balance.toLocaleString()}
+                  </div>
+                </div>
+              </div>
+              </a>`;
+          }
+        }
+      };
+
+      // --- Source #2: Charities -------------------------------------------
+      const charities = {
+        sourceId: 'charities',
+        getItemUrl({ item }){return `https://www.gofundme.com/charity/${item.slug}`},
+        getItems() {
+          return getAlgoliaResults({
+            searchClient,
+            queries: [{
+              indexName: 'charities_feed',
+              query,
+              params: { hitsPerPage: 3,
+                filters: 'hasActiveNpoPage=1 AND paypalGivingFundStatus:ACTIVE'
+               }
+            }]
+          });
+        },
+        templates: {
+          header({item, html}) { return html`<span class="aa-SourceHeaderTitle">Charities</span>`; },
+          footer({ state, html }) {
+            const query = state.query;
+
+            // You can return any HTML here
+            return html`
+              <div class="aa-panelFooter">
+                <a class="aa-SourceFooterSeeAll" href="https://www.gofundme.com/s?q=${encodeURIComponent(query)}&npo=1&nonprofits=1">
+                  See all charity results for "<strong>${query}</strong>"
+                </a>
+              </div>
+            `;
+          },
+          item({ item, components, html }) {
+            return html`<a href="https://www.gofundme.com/charity/${item.slug}" className="aa-ItemLink">
+              <div class="hit aa-ItemContent">
+                <img src="${item.logoUrl}"
+                     class="hit-thumb aa-ItemIcon" width="40" height="40" loading="lazy" />
+                <div class="hit-body aa-ItemContentBody">
+                  <div class="hit-title aa-ItemContentTitle">
+                    ${components.Highlight({ hit: item, attribute: 'name' })}
+                  </div>
+                  <div class="hit-meta">
+                    ${components.Snippet({ hit: item, attribute: 'description' })}
+                  </div>
+                </div>
+              </div>
+              </a>`;
+          }
+        }
+      };
+
+      // Return both sources to achieve federated search
+      return [fundraisers, charities];
+    }
+  });
+</script>
+
+<style>
+/* Tiny styling helper – tweak as you like */
+.hit        { display:flex; gap:.75rem; align-items:center; padding:.35rem .5rem;}
+.hit-thumb  { flex:none; border-radius:.25rem; object-fit:cover; }
+.hit-title  { font-weight:600; line-height:1.2; }
+.hit-meta   { font-size:.77rem; color:#666; }
+</style>
+

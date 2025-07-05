@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Federated Search SRP</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/instantsearch.css@8/themes/algolia-min.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      max-width: 900px;
+      margin: auto;
+    }
+    .ais-Hits-item {
+      border: 1px solid #ddd;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      background-color: #fff;
+    }
+    h2 {
+      margin-top: 3rem;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 0.5rem;
+    }
+    .results-section {
+      margin-top: 2rem;
+    }
+    .result-title {
+      margin: 0.5rem 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .result-description {
+      font-size: 0.95rem;
+      color: #444;
+    }
+    .result-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      text-decoration: none;
+      color: #0066cc;
+    }
+    .result-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive styles */
+    @media (max-width: 600px) {
+      body {
+        padding: 1rem;
+      }
+      .result-title {
+        font-size: 1rem;
+      }
+      .result-description {
+        font-size: 0.85rem;
+      }
+      img {
+        max-width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="searchbox"></div>
+
+  <div class="results-section">
+    <h2>Peer-to-Peer Fundraisers</h2>
+    <div id="p2p-fundraisers"></div>
+  </div>
+
+  <div class="results-section">
+    <h2>Charity Fundraisers</h2>
+    <div id="charities"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+  <script>
+    const searchClient = algoliasearch(
+      'E7PHE9BB38',
+      '113bf60bccbbcc611baacee9a82a1cf9'
+    );
+
+    const search = instantsearch({
+      indexName: 'prod_funds_feed_replica_1',
+      searchClient,
+    });
+
+    search.addWidgets([
+      instantsearch.widgets.searchBox({
+        container: '#searchbox',
+        placeholder: 'Search fundraisers and charities...',
+      }),
+
+      // P2P Fundraisers
+      instantsearch.widgets.index({
+        indexName: 'prod_funds_feed_replica_1',
+        indexUiState: {
+          prod_funds_feed_replica_1: {
+            hitsPerPage: 4,
+          },
+        },
+      }).addWidgets([
+        instantsearch.widgets.configure({
+          hitsPerPage: 4
+        }),
+        instantsearch.widgets.hits({
+          container: '#p2p-fundraisers',
+          templates: {
+            item(hit) {
+              return `
+                <div>
+                  <img src="${hit.thumb_img_url}" alt="${hit.fundname}" width="100%">
+                  <div class="result-title">${hit.fundname}</div>
+                  <div class="result-description">By ${hit.username}</div>
+                  <div class="result-description">Raised $${hit.balance.toLocaleString()} (${Math.round(hit.goal_progress * 100)}% of goal)</div>
+                  <a class="result-link" href="https://www.gofundme.com/f/${hit.url}" target="_blank">View fundraiser</a>
+                </div>
+              `;
+            }
+          }
+        })
+      ]),
+
+      // Charity Fundraisers
+      instantsearch.widgets.index({
+        indexName: 'charities_feed',
+        indexUiState: {
+          charities_feed: {
+            hitsPerPage: 4,
+            filters: 'hasActiveNpoPage=1 AND paypalGivingFundStatus:ACTIVE'
+          },
+        },
+      }).addWidgets([
+        instantsearch.widgets.configure({
+          hitsPerPage: 4
+        }),
+        instantsearch.widgets.hits({
+          container: '#charities',
+          templates: {
+            item(hit) {
+              return `
+                <div>
+                  <img src="${hit.logoUrl}" alt="${hit.name}" height="50">
+                  <div class="result-title">${hit.name}</div>
+                  <div class="result-description">${hit.description}</div>
+                  <div class="result-description">${hit.address.line1}, ${hit.address.city}, ${hit.address.state}</div>
+                  <a class="result-link" href="https://www.gofundme.com/charity/${hit.slug}" target="_blank">View charity</a>
+                </div>
+              `;
+            }
+          }
+        })
+      ])
+    ]);
+
+    search.start();
+  </script>
+</body>
+</html>
