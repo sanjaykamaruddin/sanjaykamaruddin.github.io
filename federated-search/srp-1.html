@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Federated Search SRP</title>
+
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/instantsearch.css@8/themes/algolia-min.css"
+  />
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h2 { margin-top: 2rem; }
+
+    .results-section { margin-bottom: 2rem; }
+
+    .ais-Hits-item {
+      border: 1px solid #ddd;
+      padding: 1rem;
+      border-radius: 10px;
+      background: #fff;
+    }
+
+    .result-title {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-top: 0.5rem;
+    }
+
+    .result-description {
+      font-size: 0.92rem;
+      color: #555;
+      margin-top: 0.25rem;
+    }
+
+    .result-link {
+      display: inline-block;
+      margin-top: 0.5rem;
+      color: #0066cc;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .result-link:hover { text-decoration: underline; }
+
+    .section-actions{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 1rem;
+      margin-top: 0.75rem;
+    }
+
+    .see-all{
+      text-decoration:none;
+      color:#0066cc;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .see-all:hover{ text-decoration:underline; }
+
+    .prev-next-pagination{
+      display:flex;
+      gap:0.5rem;
+      align-items:center;
+    }
+
+    .prev-next-pagination button{
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 8px;
+      padding: 0.35rem 0.65rem;
+      font-size: 18px;
+      font-weight: 700;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .prev-next-pagination button:disabled{
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* Images */
+    .thumb {
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      display: block;
+      object-fit: cover;
+      margin-bottom: 0.5rem;
+    }
+
+    .logo {
+      height: 44px;
+      width: auto;
+      display: block;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      background: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="searchbox"></div>
+
+  <div class="results-section">
+    <h2>Peer-to-Peer Fundraisers</h2>
+    <div id="p2p-fundraisers"></div>
+    <div class="section-actions">
+      <div id="p2p-pagination" class="prev-next-pagination"></div>
+      <a id="p2p-see-all" class="see-all" href="#">See all</a>
+    </div>
+  </div>
+
+  <div class="results-section">
+    <h2>Charity Fundraisers</h2>
+    <div id="charities"></div>
+    <div class="section-actions">
+      <div id="charity-pagination" class="prev-next-pagination"></div>
+      <a id="charity-see-all" class="see-all" href="#">See all</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/algoliasearch@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/instantsearch.js@4"></script>
+
+  <script>
+    const searchClient = algoliasearch(
+      "E7PHE9BB38",
+      "113bf60bccbbcc611baacee9a82a1cf9"
+    );
+
+    const search = instantsearch({
+      indexName: "prod_funds_feed_replica_1",
+      searchClient,
+    });
+
+    function makePrevNextPaginationWidget(containerSelector) {
+      const { connectPagination } = instantsearch.connectors;
+
+      return connectPagination((renderOptions, isFirstRender) => {
+        const {
+          currentRefinement,
+          nbPages,
+          refine,
+          isFirstPage,
+          isLastPage,
+        } = renderOptions;
+
+        const container = document.querySelector(containerSelector);
+        if (!container) return;
+
+        if (isFirstRender) {
+          container.innerHTML = `
+            <button type="button" class="prev" aria-label="Previous page">←</button>
+            <button type="button" class="next" aria-label="Next page">→</button>
+          `;
+        }
+
+        const prevBtn = container.querySelector(".prev");
+        const nextBtn = container.querySelector(".next");
+
+        const noPages = nbPages <= 1;
+        if (prevBtn) prevBtn.disabled = noPages || isFirstPage;
+        if (nextBtn) nextBtn.disabled = noPages || isLastPage;
+
+        if (prevBtn) {
+          prevBtn.onclick = (e) => {
+            e.preventDefault();
+            if (!prevBtn.disabled) refine(currentRefinement - 1);
+          };
+        }
+
+        if (nextBtn) {
+          nextBtn.onclick = (e) => {
+            e.preventDefault();
+            if (!nextBtn.disabled) refine(currentRefinement + 1);
+          };
+        }
+      })({});
+    }
+
+    // "See all" widget:
+    // - uses results.query (most reliable inside federated indices)
+    // - updates href + text
+    // - hides if there aren't more than hitsPerPage
+    function makeSeeAllWidget({
+      buttonSelector,
+      hitsPerPage,
+      buildUrl,
+      labelWithQuery,
+    }) {
+      return {
+        render({ results }) {
+          const btn = document.querySelector(buttonSelector);
+          if (!btn || !results) return;
+
+          const query = (results.query || "").trim();
+          const nbHits = results.nbHits || 0;
+
+          if (nbHits <= hitsPerPage) {
+            btn.style.display = "none";
+            return;
+          }
+
+          btn.style.display = "inline-block";
+          btn.href = buildUrl(query);
+          btn.textContent = query ? labelWithQuery(query) : "See all";
+        }
+      };
+    }
+
+    search.addWidgets([
+      instantsearch.widgets.searchBox({
+        container: "#searchbox",
+        placeholder: "Search fundraisers and charities…",
+        showReset: true,
+        showSubmit: true,
+      }),
+
+      // -------------------------
+      // P2P section
+      // -------------------------
+      instantsearch.widgets.index({
+        indexName: "prod_funds_feed_replica_1",
+      }).addWidgets([
+        instantsearch.widgets.configure({ hitsPerPage: 8 }),
+
+        instantsearch.widgets.hits({
+          container: "#p2p-fundraisers",
+          templates: {
+            item(hit) {
+              const title = hit.fundname || hit.title || hit.name || "";
+              const img = hit.thumb_img_url || hit.imageUrl || hit.image || "";
+              const username = hit.username || hit.user || hit.organizer || "";
+
+              return `
+                <div>
+                  ${img ? `<img class="thumb" src="${img}" alt="${title}">` : ""}
+                  <div class="result-title">${title}</div>
+                  ${username ? `<div class="result-description">By ${username}</div>` : ""}
+                </div>
+              `;
+            }
+          }
+        }),
+
+        makePrevNextPaginationWidget("#p2p-pagination"),
+
+        makeSeeAllWidget({
+          buttonSelector: "#p2p-see-all",
+          hitsPerPage: 8,
+          buildUrl: (q) => `https://www.gofundme.com/s?q=${encodeURIComponent(q)}`,
+          labelWithQuery: (q) => `See all fundraisers for ${q}`,
+        }),
+      ]),
+
+      // -------------------------
+      // Charity section
+      // -------------------------
+      instantsearch.widgets.index({
+        indexName: "charities_feed",
+      }).addWidgets([
+        instantsearch.widgets.configure({
+          hitsPerPage: 4,
+          filters: "hasActiveNpoPage=1 AND paypalGivingFundStatus:ACTIVE",
+        }),
+
+        instantsearch.widgets.hits({
+          container: "#charities",
+          templates: {
+            item(hit) {
+              const name = hit.name || hit.title || "";
+              const logo = hit.logoUrl || hit.logo_url || hit.logo || "";
+
+              const address = hit.address || {};
+              const line1 = address.line1 || "";
+              const city = address.city || "";
+              const state = address.state || "";
+              const addr = [line1, city, state].filter(Boolean).join(", ");
+
+              return `
+                <div>
+                  ${logo ? `<img class="logo" src="${logo}" alt="${name}">` : ""}
+                  <div class="result-title">${name}</div>
+                  ${addr ? `<div class="result-description">${addr}</div>` : ""}
+                </div>
+              `;
+            }
+          }
+        }),
+
+        makePrevNextPaginationWidget("#charity-pagination"),
+
+        makeSeeAllWidget({
+          buttonSelector: "#charity-see-all",
+          hitsPerPage: 4,
+          buildUrl: (q) =>
+            `https://www.gofundme.com/s?q=${encodeURIComponent(q)}&npo=1&nonprofits=1`,
+          labelWithQuery: (q) => `See all charities for ${q}`,
+        }),
+      ]),
+    ]);
+
+    search.start();
+  </script>
+</body>
+</html>
