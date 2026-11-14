@@ -1,0 +1,9 @@
+{
+  "client_id": "https://sanjaykamaruddin.github.io/poppy-agent/agent.json",
+  "client_name": "Pepper Test Agent",
+  "jwks_uri": "https://sanjaykamaruddin.github.io/poppy-agent/jwks.json",
+  "redirect_uris": [
+    "https://sanjaykamaruddin.github.io/poppy-agent/oauth/callback"
+  ],
+  "token_endpoint_auth_method": "private_key_jwt"
+}
